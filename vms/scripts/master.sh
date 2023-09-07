@@ -17,7 +17,7 @@ sudo echo "nameserver $(echo $IPADDR | cut -d "." -f1-3).1" >> /etc/resolv.conf
 
 LBIP="$(avahi-resolve -n4 master-01.local | awk '{print $2}')"
 
-curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="777" INSTALL_K3S_VERSION="v1.21.14+k3s1" INSTALL_K3S_EXEC="--node-ip=${IPADDR} --flannel-backend=none --cluster-cidr=192.168.8.0/16 --disable-network-policy --disable=traefik" K3S_TOKEN=SECRET sh -s - server --server https://master-01.local:6443 --disable servicelb
+curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="777" INSTALL_K3S_VERSION="v1.21.14+k3s1" INSTALL_K3S_EXEC="--node-ip=${IPADDR} --flannel-backend=none --cluster-cidr=192.168.8.0/16 --disable-network-policy --disable=traefik" K3S_TOKEN=SECRET sh -s - server --server https://${LBIP}.local:6443 --disable servicelb
 
 #curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="777" INSTALL_K3S_VERSION="v1.21.14+k3s1" INSTALL_K3S_EXEC="--node-ip=${IPADDR} --cluster-cidr=192.168.8.0/16 --disable=traefik" K3S_TOKEN=SECRET sh -s - server --server https://${LBIP}:6443 --disable servicelb
 
