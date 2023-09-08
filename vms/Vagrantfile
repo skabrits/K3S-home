@@ -37,12 +37,13 @@ Vagrant.configure("2") do |config|
   
   if SIDE_OS == 0
     config.vm.define "LoadBalancer" do |lb|
-	  lb.vm.hostname = "LoadBalancer"
-	  # lb.vm.network "private_network", ip: IP_BASE + "#{IP_START}"
-	  lb.vm.provision "shell", path: "scripts/lb.sh"
-	  lb.vm.provider "virtualbox" do |v|
-		v.name = "LoadBalancer"
-	      v.memory = 2048
+      lb.vm.hostname = "LoadBalancer"
+      # lb.vm.network "private_network", ip: IP_BASE + "#{IP_START}"
+      lb.vm.provision "shell", path: "scripts/lb.sh"
+      lb.vm.provider "virtualbox" do |v|
+        v.name = "LoadBalancer"
+        v.memory = 2048
+        v.cpus = 2
       end
     end
   end
@@ -50,11 +51,11 @@ Vagrant.configure("2") do |config|
   (1..MASTER_NUM).each do |i|
     
     config.vm.define "master-0#{i}" do |master|
-	  if SIDE_OS == 0
+      if SIDE_OS == 0
         master.vm.hostname = "master-0#{i}"
-	  else
-	    master.vm.hostname = "#{`hostname`[0..-2]}-master-0#{i}"
-	  end
+      else
+        master.vm.hostname = "#{`hostname`[0..-2]}-master-0#{i}"
+      end
       # master.vm.network "private_network", ip: IP_BASE + "#{IP_START+i}"
       if i == 1 and SIDE_OS == 0
         master.vm.provision "shell", path: "scripts/boss.sh"
@@ -78,17 +79,17 @@ Vagrant.configure("2") do |config|
   (1..WORKER_NUM).each do |i|
     
     config.vm.define "worker-0#{i}" do |worker|
-	  if SIDE_OS == 0
+      if SIDE_OS == 0
         worker.vm.hostname = "worker-0#{i}"
-	  else
-	    worker.vm.hostname = "#{`hostname`[0..-2]}-worker-0#{i}"
-	  end
+      else
+        worker.vm.hostname = "#{`hostname`[0..-2]}-worker-0#{i}"
+      end
       # worker.vm.network "private_network", ip: IP_BASE + "#{IP_START+MASTER_NUM+i}"
       worker.vm.provision "shell", path: "scripts/worker.sh"
-	  worker.vm.provider "virtualbox" do |v|
+      worker.vm.provider "virtualbox" do |v|
         v.name = "worker-0#{i}"
         v.memory = 8192
-        v.cpus = 2
+        v.cpus = 4
       end
     end
   end
